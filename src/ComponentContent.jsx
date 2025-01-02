@@ -5,16 +5,16 @@ import Sparkline from './Sparkline';
 import { functionRelevantElements } from './utils';
 
 const intervals = [
-  { label: '0.1s', value: 100 },
-  { label: '0.5s', value: 500 },
   { label: '1s', value: 1000 },
+  { label: '2.5s', value: 2500 },
+  { label: '5s', value: 5000 },
 ]
 
 export default function ComponentContent() {
   const [stats2, setStats2] = useState({});
   const [statsHistory, setStatsHistory] = useState([]);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [intervalTimer, setIntervalTimer] = useState(100);
+  const [intervalTimer, setIntervalTimer] = useState(1500);
 
   const constructDetails = useCallback(() => {
     const loadTime = performance.timing ? (performance.timing.loadEventEnd - performance.timing.navigationStart) / 1000 : false;
@@ -70,15 +70,55 @@ export default function ComponentContent() {
         unit: 'KB/s',
       },
     }));
+
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      constructDetails()
-    }, intervalTimer);
+    let interval = null;
+    let idleCallbackId = null;
 
-    return () => clearInterval(interval);
+    const scheduleConstructDetails = () => {
+      if (idleCallbackId) {
+        cancelIdleCallback(idleCallbackId); // Ensure previous callback is canceled
+      }
+      idleCallbackId = requestIdleCallback(() => {
+        constructDetails();
+      });
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        if (interval) {
+          clearInterval(interval);
+          interval = null; // Avoid overlapping intervals
+        }
+        if (idleCallbackId) {
+          cancelIdleCallback(idleCallbackId);
+        }
+      } else if (!interval) { // Only set a new interval if not already set
+        interval = setInterval(scheduleConstructDetails, intervalTimer);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Initial setup
+    if (!interval) {
+      interval = setInterval(scheduleConstructDetails, intervalTimer);
+      console.log('Initial setup');
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+      if (idleCallbackId) {
+        cancelIdleCallback(idleCallbackId);
+      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [intervalTimer, constructDetails]);
+
 
   useEffect(() => {
     if (Object.keys(stats2).length) {
@@ -154,7 +194,7 @@ export default function ComponentContent() {
 
           <Sparkline
             data={statsHistory?.map(stat => stat[key].value).filter(Number)}
-            width={100} height={20} stroke="blue" strokeWidth={2} tooltip={true} />
+            width={100} height={20} stroke="blue" strokeWidth={2} tooltip={false} />
 
           <Typography variant='caption' style={{ width: '70px', textAlign: 'right' }}>{entry.value} {entry.unit}</Typography>
 

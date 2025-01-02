@@ -1,4 +1,5 @@
 export const extensionIdentifier = 'extra-dom-stats'
+export const relevantElements = document.querySelectorAll(`:not(#${extensionIdentifier}):not(#${extensionIdentifier} *)`)
 
 export function getDominantBackgroundColor() {
   const elements = document.querySelectorAll('*');
@@ -128,6 +129,8 @@ export function getGenericFactor(property, elements, condition) {
 
   let dominantValue = null;
   let maxCount = 0;
+
+  console.log(counts, property);
 
   for (const count in counts) {
     if (counts[count] > maxCount) {

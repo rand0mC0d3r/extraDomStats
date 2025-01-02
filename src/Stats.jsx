@@ -1,7 +1,9 @@
 /* eslint-disable no-undef */
+import { ThemeProvider } from '@mui/material/styles';
 import React from "react";
 import ReactDOM from "react-dom/client";
 import ComponentContent from './ComponentContent';
+import theme from './theme';
 import { extensionIdentifier } from './utils';
 
 const root = document.createElement("div");
@@ -16,4 +18,6 @@ root.id = extensionIdentifier;
 
 document.body.appendChild(root);
 
-ReactDOM.createRoot(root).render(<ComponentContent />);
+ReactDOM.createRoot(root).render(<ThemeProvider theme={theme}>
+  <ComponentContent />
+</ThemeProvider>);

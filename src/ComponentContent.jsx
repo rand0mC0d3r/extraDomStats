@@ -20,6 +20,9 @@ export default function ComponentContent() {
   const [dominantBorderRadius, setDominantBorderRadius] = useState('16px');
   const [dominantFontFace, setDominantFontFace] = useState('Arial');
   const [dominantBorderColor, setDominantBorderColor] = useState('#00000088');
+  const [dominantPadding, setDominantPadding] = useState('8px');
+
+  const relevantElements = document.querySelectorAll(':not(#crx-root):not(#crx-root *)')
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -36,13 +39,13 @@ export default function ComponentContent() {
 
       setStats(prev => ({
         ...prev,
-        '🧮 DOM Count': document.querySelectorAll(':not(#crx-root):not(#crx-root *)').length,
+        '🧮 DOM Count': relevantElements.length,
         "🧠 Used JS Heap": performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
         "🗒️ Total JS Heap": performance.memory ? Math.round(performance.memory.totalJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
         "⏱️ Page Load Time": loadTime,
         "🔄 Round Trip Time": navigator.connection.rtt,
         "📜 JS Files Loaded": jsFiles,
-        "⚡ Avg Download Speed": Math.round(avgDownloadSpeed * 1000) / 1000
+        "⚡ Avg Speed": Math.round(avgDownloadSpeed * 1000) / 1000
         ,
       }));
     }, intervalTimer);
@@ -78,10 +81,10 @@ export default function ComponentContent() {
   }
 
   useEffect(() => {
-    setDominantBackgroundColor(getDominantBackgroundColor());
-    setDominantBorderRadius(getDominantBorderRadius());
-    setDominantBorderColor(getDominantBorderColor());
-    // setDominantBorderColor(getGenericFactor('borderColor', document.querySelectorAll('*'), color => color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent'));
+    setDominantBackgroundColor(getGenericFactor('backgroundColor', relevantElements, color => color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent'));
+    setDominantBorderRadius(getGenericFactor('borderRadius', relevantElements, radius => radius !== '0px'));
+    setDominantBorderColor(getGenericFactor('borderColor', relevantElements, color => color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent'));
+    setDominantPadding(getGenericFactor('padding', relevantElements, padding => padding !== '0px'));
     setDominantFontFace(getDominantFontFace());
   }, []);
 
@@ -99,14 +102,14 @@ export default function ComponentContent() {
     >
       <div style={{
         pointerEvents: 'auto',
-        padding: 8,
+        padding: `8px`,
         background: dominantBackgroundColor,
         color: 'black',
         fontSize: 11,
         width: 'fit-content',
         cursor: 'move',
         fontFamily: dominantFontFace,
-        borderRadius: dominantBorderRadius,
+        borderRadius: "8px",
         border: `1px solid ${dominantBorderColor}`,
         display: 'flex',
         flexDirection: 'column',

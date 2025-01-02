@@ -2,6 +2,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import ComponentContent from './ComponentContent';
+import { extensionIdentifier } from './utils';
 
 const root = document.createElement("div");
 root.style.top = "0";
@@ -11,7 +12,7 @@ root.style.bottom = "0";
 root.style.zIndex = "2147483647";
 root.style.pointerEvents = "none";
 root.style.position = "fixed";
-root.id = "crx-root";
+root.id = extensionIdentifier;
 
 document.body.appendChild(root);
 

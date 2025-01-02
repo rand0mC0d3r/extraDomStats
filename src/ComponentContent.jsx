@@ -1,6 +1,14 @@
+import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import Draggable from 'react-draggable'; // The default
 import Sparkline from './Sparkline';
+import { getDominantBackgroundColor, getDominantBorderColor, getDominantBorderRadius, getDominantFontFace, getGenericFactor } from './utils';
+
+const intervals = [
+  { label: '0.1s', value: 100 },
+  { label: '0.5s', value: 500 },
+  { label: '1s', value: 1000 },
+]
 
 export default function ComponentContent() {
   const [stats, setStats] = useState({});
@@ -8,11 +16,23 @@ export default function ComponentContent() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [intervalTimer, setIntervalTimer] = useState(1000);
 
+  const [dominantBackgroundColor, setDominantBackgroundColor] = useState('#14539aaf');
+  const [dominantBorderRadius, setDominantBorderRadius] = useState('16px');
+  const [dominantFontFace, setDominantFontFace] = useState('Arial');
+  const [dominantBorderColor, setDominantBorderColor] = useState('#00000088');
+
   useEffect(() => {
     const interval = setInterval(() => {
 
       const loadTime = performance.timing ? (performance.timing.loadEventEnd - performance.timing.navigationStart) / 1000 : false;
       const jsFiles = document.querySelectorAll('script[src]').length;
+
+      // Calculate average file download speed
+      const resources = performance.getEntriesByType('resource');
+      const totalDownloadTime = resources.reduce((acc, resource) => acc + (resource.responseEnd - resource.responseStart), 0);
+      const totalSize = resources.reduce((acc, resource) => acc + resource.transferSize, 0);
+      const avgDownloadSpeed = totalSize / totalDownloadTime || 0;
+
 
       setStats(prev => ({
         ...prev,
@@ -21,7 +41,8 @@ export default function ComponentContent() {
         "🗒️ Total JS Heap": performance.memory ? Math.round(performance.memory.totalJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
         "⏱️ Page Load Time": loadTime,
         "🔄 Round Trip Time": navigator.connection.rtt,
-        "📜 JS Files Loaded": jsFiles
+        "📜 JS Files Loaded": jsFiles,
+        "⚡ Avg Download Speed": Math.round(avgDownloadSpeed * 1000) / 1000
         ,
       }));
     }, intervalTimer);
@@ -56,6 +77,16 @@ export default function ComponentContent() {
     setPosition({ x: data.x, y: data.y });
   }
 
+  useEffect(() => {
+    setDominantBackgroundColor(getDominantBackgroundColor());
+    setDominantBorderRadius(getDominantBorderRadius());
+    setDominantBorderColor(getDominantBorderColor());
+    // setDominantBorderColor(getGenericFactor('borderColor', document.querySelectorAll('*'), color => color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent'));
+    setDominantFontFace(getDominantFontFace());
+  }, []);
+
+  // console.log(getDominantBackgroundColor());
+
   if (Object.keys(stats).length === 0) return null;
 
   return <>
@@ -68,21 +99,20 @@ export default function ComponentContent() {
     >
       <div style={{
         pointerEvents: 'auto',
-        padding: 4,
-        background: '#14539aaf',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.6)',
-        backdropFilter: 'blur(5px)',
+        padding: 8,
+        background: dominantBackgroundColor,
         color: 'black',
         fontSize: 11,
         width: 'fit-content',
         cursor: 'move',
-        fontFamily: 'Helvetica, Arial, sans-serif',
-        borderRadius: 5,
-        border: '1px solid #00000088',
+        fontFamily: dominantFontFace,
+        borderRadius: dominantBorderRadius,
+        border: `1px solid ${dominantBorderColor}`,
         display: 'flex',
         flexDirection: 'column',
-        gap: 6
+        gap: 8
       }}>
+
         {Object.keys(stats).map((key, i) => <div
           key={key}
           style={{
@@ -91,7 +121,7 @@ export default function ComponentContent() {
             gap: 10,
             alignItems: 'center',
             padding: '2px 8px',
-            borderRadius: 5,
+            borderRadius: dominantBorderRadius,
             background: `rgba(255, 255, 255, ${i % 2 === 0 ? '0.3' : '0.5'} )`,
           }}>
           <div style={{ width: '125px' }}>{key}:</div>
@@ -108,9 +138,15 @@ export default function ComponentContent() {
         </div>)}
 
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-          <button onClick={() => setIntervalTimer(500)}>0.5s</button>
-          <button onClick={() => setIntervalTimer(1000)}>1s</button>
-          <button onClick={() => setIntervalTimer(5000)}>5s</button>
+          {intervals.map(({ label, value }) => <Button
+            variant='contained'
+            style={{ borderRadius: dominantBorderRadius }}
+            size="small"
+            key={label}
+            onClick={() => setIntervalTimer(value)}
+          >
+            {label}
+          </Button>)}
         </div>
       </div>
     </Draggable>

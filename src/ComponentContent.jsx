@@ -11,7 +11,7 @@ const intervals = [
 ]
 
 export default function ComponentContent() {
-  const [stats, setStats] = useState({});
+  const [stats2, setStats2] = useState({});
   const [statsHistory, setStatsHistory] = useState([]);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [intervalTimer, setIntervalTimer] = useState(1000);
@@ -27,16 +27,50 @@ export default function ComponentContent() {
       const totalSize = resources.reduce((acc, resource) => acc + resource.transferSize, 0);
       const avgDownloadSpeed = totalSize / totalDownloadTime || 0;
 
-      setStats(prev => ({
+      setStats2(prev => ({
         ...prev,
-        '🧮 DOM Count': functionRelevantElements().length,
-        "🧠 Used JS Heap": performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
-        "🗒️ Total JS Heap": performance.memory ? Math.round(performance.memory.totalJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
-        "⏱️ Page Load Time": loadTime,
-        "🔄 Round Trip Time": navigator.connection.rtt,
-        "📜 JS Files Loaded": jsFiles,
-        "⚡ Avg Speed": Math.round(avgDownloadSpeed * 1000) / 1000
-        ,
+        'dom.count': {
+          icon: '🧮',
+          label: 'DOM Count',
+          value: functionRelevantElements().length,
+          unit: '',
+        },
+        'js.heap.used': {
+          icon: '🧠',
+          label: 'Used JS Heap',
+          value: performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
+          unit: 'MB',
+        },
+        'js.heap.total': {
+          icon: '🧠',
+          label: 'Total JS Heap',
+          value: performance.memory ? Math.round(performance.memory.totalJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
+          unit: 'MB',
+        },
+        'page.load.time': {
+          icon: '⏱️',
+          label: 'Page Load Time',
+          value: loadTime,
+          unit: 's',
+        },
+        'round.trip.time': {
+          icon: '🔄',
+          label: 'Round Trip Time',
+          value: navigator.connection.rtt,
+          unit: 'ms',
+        },
+        'js.files.loaded': {
+          icon: '📜',
+          label: 'JS Files Loaded',
+          value: jsFiles,
+          unit: '',
+        },
+        'avg.speed': {
+          icon: '⚡',
+          label: 'Avg Speed',
+          value: Math.round(avgDownloadSpeed * 1000) / 1000,
+          unit: 'KB/s',
+        },
       }));
     }, intervalTimer);
 
@@ -44,16 +78,16 @@ export default function ComponentContent() {
   }, [intervalTimer]);
 
   useEffect(() => {
-    if (Object.keys(stats).length) {
+    if (Object.keys(stats2).length) {
       setStatsHistory(prev => {
         if (prev.length >= 60) {
-          return [...prev.slice(1), stats];
+          return [...prev.slice(1), stats2];
         } else {
-          return [...prev, stats];
+          return [...prev, stats2];
         }
       });
     }
-  }, [stats])
+  }, [stats2])
 
   useEffect(() => {
     const localStoragePosition = localStorage.getItem('stats-position');
@@ -70,7 +104,7 @@ export default function ComponentContent() {
     setPosition({ x: data.x, y: data.y });
   }
 
-  if (Object.keys(stats).length === 0) return null;
+  if (Object.keys(stats2).length === 0) return null;
 
   return <>
     <Draggable
@@ -97,7 +131,7 @@ export default function ComponentContent() {
           cursor: 'move',
         }}
       >
-        {Object.keys(stats).map((key, i) => <Box
+        {Object.entries(stats2).map(([key, entry], i) => <Box
           key={key}
           display={'flex'}
           justifyContent={'space-between'}
@@ -112,16 +146,17 @@ export default function ComponentContent() {
             border: '1px solid #00000022',
             background: `rgba(255, 255, 255, ${i % 2 === 0 ? '0.3' : '0.5'} )`,
           }}>
-          <Typography variant='caption' style={{ width: '125px' }}>{key}:</Typography>
+          <Typography variant='caption'>{entry.icon}</Typography>
+          <Typography variant='caption' style={{ width: '125px' }}>{entry.label}:</Typography>
 
           <Sparkline
-            data={statsHistory.map(stat => stat[key]).filter(Number)}
+            data={statsHistory?.map(stat => stat[key].value).filter(Number)}
             width={100} height={20} stroke="blue" strokeWidth={2} tooltip={true} />
 
-          <Typography variant='caption' style={{ width: '50px', textAlign: 'right' }}>{stats[key]}</Typography>
+          <Typography variant='caption' style={{ width: '50px', textAlign: 'right' }}>{entry.value}</Typography>
 
           <Typography variant='caption' style={{ width: '50px', textAlign: 'right' }}>
-            {Math.round(statsHistory.map(stat => stat[key]).reduce((acc, val) => acc + val, 0) / statsHistory.length)}
+            {Math.round(statsHistory?.map(stat => stat[key].value).reduce((acc, val) => acc + val, 0) / statsHistory.length)}
           </Typography>
         </Box>)}
 

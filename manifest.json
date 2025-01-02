@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "test test",
+  "version": "1.0.1",
+  "description": "test test",
+  "action": { "default_popup": "index.html" },
+  "permissions": ["activeTab", "storage", "sidePanel", "nativeMessaging"],
+  "content_scripts": [
+    {
+      "js": ["src/Stats.jsx"],
+      "matches": ["https://www.google.de/travel/*", "https://www.google.com/travel/*", "https://www.npmjs.com/*"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval' http://localhost:* http://127.0.0.1:*; object-src 'self'"
+  }
+}

@@ -1,6 +1,6 @@
 import { red } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
-
+import Color from 'color';
 import { functionRelevantElements, getDominantFontFace, getGenericFactor } from './utils';
 
 // Run the detection logic
@@ -26,7 +26,9 @@ const theme = createTheme({
       main: red.A400,
     },
     background: {
-      default: dominantBackgroundColor || '#ffffff',
+      default: Color(dominantBackgroundColor).darken(0.25).toString() || '#ffffff',
+      paper: dominantBackgroundColor || '#ffffff',
+      // default: dominantBackgroundColor || '#ffffff',
     },
   },
   typography: {
@@ -40,6 +42,8 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
+          borderRadius: Math.min(parseInt(dominantBorderRadius.replace(/\D/g, ''), 10), 8),
+          textTransform: 'none',
           borderColor: dominantBorderColor || '#000000',
         },
       },

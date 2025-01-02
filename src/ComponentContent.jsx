@@ -6,6 +6,7 @@ export default function ComponentContent() {
   const [stats, setStats] = useState({});
   const [statsHistory, setStatsHistory] = useState([]);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [intervalTimer, setIntervalTimer] = useState(1000);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -19,15 +20,14 @@ export default function ComponentContent() {
         "🧠 Used JS Heap": performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
         "🗒️ Total JS Heap": performance.memory ? Math.round(performance.memory.totalJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
         "⏱️ Page Load Time": loadTime,
-        "📡 Network Type": navigator.connection.effectiveType,
         "🔄 Round Trip Time": navigator.connection.rtt,
         "📜 JS Files Loaded": jsFiles
         ,
       }));
-    }, 1000);
+    }, intervalTimer);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [intervalTimer]);
 
   useEffect(() => {
     if (Object.keys(stats).length) {
@@ -97,11 +97,21 @@ export default function ComponentContent() {
           <div style={{ width: '125px' }}>{key}:</div>
 
           <Sparkline
-            data={statsHistory.map(stat => stat[key])}
+            data={statsHistory.map(stat => stat[key]).filter(Number)}
             width={100} height={20} stroke="blue" strokeWidth={2} tooltip={true} />
 
           <div style={{ width: '50px', textAlign: 'right' }}>{stats[key]}</div>
+          <div style={{ width: '50px', textAlign: 'right' }}>
+            {Math.round(statsHistory.map(stat => stat[key]).reduce((acc, val) => acc + val, 0) / statsHistory.length)}
+          </div>
+
         </div>)}
+
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+          <button onClick={() => setIntervalTimer(500)}>0.5s</button>
+          <button onClick={() => setIntervalTimer(1000)}>1s</button>
+          <button onClick={() => setIntervalTimer(5000)}>5s</button>
+        </div>
       </div>
     </Draggable>
   </>

@@ -70,10 +70,6 @@ export default function ComponentContent() {
     setPosition({ x: data.x, y: data.y });
   }
 
-  const collapseData = () => {
-    console.log('collapseData');
-  }
-
   if (Object.keys(stats).length === 0) return null;
 
   return <>
@@ -138,7 +134,6 @@ export default function ComponentContent() {
           >
             {label}
           </Button>)}
-          <Button onClick={collapseData} variant='contained'>Collapse</Button>
         </div>
       </Box>
     </Draggable>

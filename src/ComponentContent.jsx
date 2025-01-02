@@ -5,6 +5,7 @@ import Sparkline from './Sparkline';
 export default function ComponentContent() {
   const [stats, setStats] = useState({});
   const [statsHistory, setStatsHistory] = useState([]);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -40,14 +41,30 @@ export default function ComponentContent() {
     }
   }, [stats])
 
-  if (!stats) return null;
+  useEffect(() => {
+    const localStoragePosition = localStorage.getItem('stats-position');
+    if (localStoragePosition) {
+      setPosition(JSON.parse(localStoragePosition));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('stats-position', JSON.stringify(position));
+  }, [position]);
+
+  const handleStop = (e, data) => {
+    setPosition({ x: data.x, y: data.y });
+  }
+
+  if (Object.keys(stats).length === 0) return null;
 
   return <>
     <Draggable
-      defaultPosition={{ x: 0, y: 0 }}
-      position={null}
+      position={position}
       grid={[10, 10]}
       scale={1}
+      onStop={handleStop}
+      on
     >
       <div style={{
         pointerEvents: 'auto',
@@ -72,7 +89,7 @@ export default function ComponentContent() {
             padding: '2px 8px',
             background: i % 2 === 0 ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
           }}>
-          <div style={{ width: '150px' }}>{key}:</div>
+          <div style={{ width: '125px' }}>{key}:</div>
 
           <Sparkline
             data={statsHistory.map(stat => stat[key])}

@@ -69,16 +69,19 @@ export default function ComponentContent() {
       <div style={{
         pointerEvents: 'auto',
         padding: 4,
-        background: 'rgba(255, 255, 255, 0.9)',
+        background: '#14539aaf',
+        boxShadow: '0 0 10px rgba(0, 0, 0, 0.6)',
+        backdropFilter: 'blur(5px)',
         color: 'black',
-        fontSize: 12,
+        fontSize: 11,
         width: 'fit-content',
         cursor: 'move',
+        fontFamily: 'Helvetica, Arial, sans-serif',
         borderRadius: 5,
         border: '1px solid #00000088',
         display: 'flex',
         flexDirection: 'column',
-        gap: 4
+        gap: 6
       }}>
         {Object.keys(stats).map((key, i) => <div
           key={key}
@@ -86,8 +89,10 @@ export default function ComponentContent() {
             display: 'flex',
             justifyContent: 'space-between',
             gap: 10,
+            alignItems: 'center',
             padding: '2px 8px',
-            background: i % 2 === 0 ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
+            borderRadius: 5,
+            background: `rgba(255, 255, 255, ${i % 2 === 0 ? '0.3' : '0.5'} )`,
           }}>
           <div style={{ width: '125px' }}>{key}:</div>
 
@@ -95,7 +100,7 @@ export default function ComponentContent() {
             data={statsHistory.map(stat => stat[key])}
             width={100} height={20} stroke="blue" strokeWidth={2} tooltip={true} />
 
-          <div>{stats[key]}</div>
+          <div style={{ width: '50px', textAlign: 'right' }}>{stats[key]}</div>
         </div>)}
       </div>
     </Draggable>

@@ -8,7 +8,7 @@
   "content_scripts": [
     {
       "js": ["src/Stats.jsx"],
-      "matches": ["https://www.google.de/travel/*", "https://www.google.com/travel/*", "https://www.npmjs.com/*"]
+      "matches": ["<all_urls>"]
     }
   ],
   "content_security_policy": {

@@ -9,7 +9,7 @@ root.style.left = "0";
 root.style.right = "0";
 root.style.bottom = "0";
 root.style.zIndex = "2147483647";
-// root.style.pointerEvents = "none";
+root.style.pointerEvents = "none";
 root.style.position = "fixed";
 root.id = "crx-root";
 

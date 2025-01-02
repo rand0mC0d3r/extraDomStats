@@ -2,6 +2,7 @@ import { Box, Button, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import Draggable from 'react-draggable'; // The default
 import Sparkline from './Sparkline';
+import { functionRelevantElements } from './utils';
 
 const intervals = [
   { label: '0.1s', value: 100 },
@@ -15,24 +16,20 @@ export default function ComponentContent() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [intervalTimer, setIntervalTimer] = useState(1000);
 
-  const relevantElements = document.querySelectorAll(':not(#crx-root):not(#crx-root *)')
-
   useEffect(() => {
     const interval = setInterval(() => {
 
       const loadTime = performance.timing ? (performance.timing.loadEventEnd - performance.timing.navigationStart) / 1000 : false;
       const jsFiles = document.querySelectorAll('script[src]').length;
 
-      // Calculate average file download speed
       const resources = performance.getEntriesByType('resource');
       const totalDownloadTime = resources.reduce((acc, resource) => acc + (resource.responseEnd - resource.responseStart), 0);
       const totalSize = resources.reduce((acc, resource) => acc + resource.transferSize, 0);
       const avgDownloadSpeed = totalSize / totalDownloadTime || 0;
 
-
       setStats(prev => ({
         ...prev,
-        '🧮 DOM Count': relevantElements.length,
+        '🧮 DOM Count': functionRelevantElements().length,
         "🧠 Used JS Heap": performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
         "🗒️ Total JS Heap": performance.memory ? Math.round(performance.memory.totalJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
         "⏱️ Page Load Time": loadTime,
@@ -88,7 +85,7 @@ export default function ComponentContent() {
         p={1}
         sx={{
           bgcolor: 'background.default',
-          borderRadius: 'shape.borderRadius',
+          borderRadius: 2,
           borderColor: 'divider',
           border: 1,
         }}
@@ -106,7 +103,11 @@ export default function ComponentContent() {
           justifyContent={'space-between'}
           gap={2}
           alignItems={'center'}
-          p={1}
+          px={2}
+          py={1}
+          sx={{
+            borderRadius: 2,
+          }}
           style={{
             border: '1px solid #00000022',
             background: `rgba(255, 255, 255, ${i % 2 === 0 ? '0.3' : '0.5'} )`,

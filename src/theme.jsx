@@ -1,22 +1,23 @@
 import { red } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
 
-import { getDominantFontFace, getGenericFactor } from './utils';
+import { functionRelevantElements, getDominantFontFace, getGenericFactor } from './utils';
 
 // Run the detection logic
-const relevantElements = document.querySelectorAll(':not(#crx-root):not(#crx-root *)');
-const dominantBackgroundColor = getGenericFactor('backgroundColor', relevantElements, color => color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent');
-const dominantBorderRadius = getGenericFactor('borderRadius', relevantElements, radius => radius !== '0px');
-const dominantBorderColor = getGenericFactor('borderColor', relevantElements, color => color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent');
+const dominantBackgroundColor = getGenericFactor('backgroundColor', functionRelevantElements(), color => color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent');
+const dominantBorderRadius = getGenericFactor('borderRadius', functionRelevantElements(), radius => radius !== '0px');
+const dominantBorderColor = getGenericFactor('borderColor', functionRelevantElements(), color => color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent');
 const dominantFontFace = getDominantFontFace();
-const dominantGap = getGenericFactor('gap', relevantElements, gap => gap !== '0px' && gap !== 'normal');
+const dominantGap = getGenericFactor('gap', functionRelevantElements(), gap => gap !== '0px' && gap !== 'normal');
+
+const determinePrimaryColor = getGenericFactor('color', functionRelevantElements(), color => color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent');
 
 // Create a theme instance.
 const theme = createTheme({
   cssVariables: true,
   palette: {
     primary: {
-      main: '#556cd6',
+      main: determinePrimaryColor || '#1976d2',
     },
     secondary: {
       main: '#19857b',
@@ -32,9 +33,9 @@ const theme = createTheme({
     fontFamily: dominantFontFace || 'Arial',
   },
   shape: {
-    borderRadius: dominantBorderRadius ? parseInt(dominantBorderRadius.replace(/\D/g, ''), 10) : 4,
+    borderRadius: Math.min(parseInt(dominantBorderRadius.replace(/\D/g, ''), 10), 8),
   },
-  spacing: dominantGap ? parseInt(dominantGap.replace(/\D/g, ''), 10) : 8,
+  spacing: dominantGap ? Math.min(parseInt(dominantGap.replace(/\D/g, ''), 10), 4) : 4,
   components: {
     MuiButton: {
       styleOverrides: {

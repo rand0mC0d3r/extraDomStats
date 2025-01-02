@@ -1,6 +1,10 @@
 export const extensionIdentifier = 'extra-dom-stats'
 export const relevantElements = document.querySelectorAll(`:not(#${extensionIdentifier}):not(#${extensionIdentifier} *)`)
 
+export const functionRelevantElements = () => {
+  return document.querySelectorAll(`:not(#${extensionIdentifier}):not(#${extensionIdentifier} *)`)
+}
+
 export function getDominantBackgroundColor() {
   const elements = document.querySelectorAll('*');
   const colorCount = {};

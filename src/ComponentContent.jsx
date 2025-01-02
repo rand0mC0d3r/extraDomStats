@@ -1,8 +1,7 @@
-import { Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import Draggable from 'react-draggable'; // The default
 import Sparkline from './Sparkline';
-import { getDominantBackgroundColor, getDominantBorderColor, getDominantBorderRadius, getDominantFontFace, getGenericFactor } from './utils';
 
 const intervals = [
   { label: '0.1s', value: 100 },
@@ -15,12 +14,6 @@ export default function ComponentContent() {
   const [statsHistory, setStatsHistory] = useState([]);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [intervalTimer, setIntervalTimer] = useState(1000);
-
-  const [dominantBackgroundColor, setDominantBackgroundColor] = useState('#14539aaf');
-  const [dominantBorderRadius, setDominantBorderRadius] = useState('16px');
-  const [dominantFontFace, setDominantFontFace] = useState('Arial');
-  const [dominantBorderColor, setDominantBorderColor] = useState('#00000088');
-  const [dominantPadding, setDominantPadding] = useState('8px');
 
   const relevantElements = document.querySelectorAll(':not(#crx-root):not(#crx-root *)')
 
@@ -80,16 +73,6 @@ export default function ComponentContent() {
     setPosition({ x: data.x, y: data.y });
   }
 
-  useEffect(() => {
-    setDominantBackgroundColor(getGenericFactor('backgroundColor', relevantElements, color => color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent'));
-    setDominantBorderRadius(getGenericFactor('borderRadius', relevantElements, radius => radius !== '0px'));
-    setDominantBorderColor(getGenericFactor('borderColor', relevantElements, color => color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent'));
-    setDominantPadding(getGenericFactor('padding', relevantElements, padding => padding !== '0px'));
-    setDominantFontFace(getDominantFontFace());
-  }, []);
-
-  // console.log(getDominantBackgroundColor());
-
   if (Object.keys(stats).length === 0) return null;
 
   return <>
@@ -100,50 +83,50 @@ export default function ComponentContent() {
       onStop={handleStop}
       on
     >
-      <div style={{
-        pointerEvents: 'auto',
-        padding: `8px`,
-        background: dominantBackgroundColor,
-        color: 'black',
-        fontSize: 11,
-        width: 'fit-content',
-        cursor: 'move',
-        fontFamily: dominantFontFace,
-        borderRadius: "8px",
-        border: `1px solid ${dominantBorderColor}`,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 8
-      }}>
-
-        {Object.keys(stats).map((key, i) => <div
+      <Box
+        gap={2}
+        p={1}
+        sx={{
+          bgcolor: 'background.default',
+          borderRadius: 'shape.borderRadius',
+          borderColor: 'divider',
+          border: 1,
+        }}
+        display={'flex'}
+        flexDirection={'column'}
+        style={{
+          pointerEvents: 'auto',
+          width: 'fit-content',
+          cursor: 'move',
+        }}
+      >
+        {Object.keys(stats).map((key, i) => <Box
           key={key}
+          display={'flex'}
+          justifyContent={'space-between'}
+          gap={2}
+          alignItems={'center'}
+          p={1}
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            gap: 10,
-            alignItems: 'center',
-            padding: '2px 8px',
-            borderRadius: dominantBorderRadius,
+            border: '1px solid #00000022',
             background: `rgba(255, 255, 255, ${i % 2 === 0 ? '0.3' : '0.5'} )`,
           }}>
-          <div style={{ width: '125px' }}>{key}:</div>
+          <Typography variant='caption' style={{ width: '125px' }}>{key}:</Typography>
 
           <Sparkline
             data={statsHistory.map(stat => stat[key]).filter(Number)}
             width={100} height={20} stroke="blue" strokeWidth={2} tooltip={true} />
 
-          <div style={{ width: '50px', textAlign: 'right' }}>{stats[key]}</div>
-          <div style={{ width: '50px', textAlign: 'right' }}>
+          <Typography variant='caption' style={{ width: '50px', textAlign: 'right' }}>{stats[key]}</Typography>
+
+          <Typography variant='caption' style={{ width: '50px', textAlign: 'right' }}>
             {Math.round(statsHistory.map(stat => stat[key]).reduce((acc, val) => acc + val, 0) / statsHistory.length)}
-          </div>
+          </Typography>
+        </Box>)}
 
-        </div>)}
-
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
           {intervals.map(({ label, value }) => <Button
             variant='contained'
-            style={{ borderRadius: dominantBorderRadius }}
             size="small"
             key={label}
             onClick={() => setIntervalTimer(value)}
@@ -151,7 +134,7 @@ export default function ComponentContent() {
             {label}
           </Button>)}
         </div>
-      </div>
+      </Box>
     </Draggable>
   </>
 }

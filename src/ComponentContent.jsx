@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Draggable from 'react-draggable'; // The default
 import Sparkline from './Sparkline';
 import { functionRelevantElements } from './utils';
@@ -14,68 +14,71 @@ export default function ComponentContent() {
   const [stats2, setStats2] = useState({});
   const [statsHistory, setStatsHistory] = useState([]);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [intervalTimer, setIntervalTimer] = useState(1000);
+  const [intervalTimer, setIntervalTimer] = useState(100);
+
+  const constructDetails = useCallback(() => {
+    const loadTime = performance.timing ? (performance.timing.loadEventEnd - performance.timing.navigationStart) / 1000 : false;
+    const jsFiles = document.querySelectorAll('script[src]').length;
+
+    const resources = performance.getEntriesByType('resource');
+    const totalDownloadTime = resources.reduce((acc, resource) => acc + (resource.responseEnd - resource.responseStart), 0);
+    const totalSize = resources.reduce((acc, resource) => acc + resource.transferSize, 0);
+    const avgDownloadSpeed = totalSize / totalDownloadTime || 0;
+
+    setStats2(prev => ({
+      ...prev,
+      'dom.count': {
+        icon: '🧮',
+        label: 'DOM Count',
+        value: functionRelevantElements().length,
+        unit: '',
+      },
+      'js.heap.used': {
+        icon: '🧠',
+        label: 'Used JS Heap',
+        value: performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
+        unit: 'MB',
+      },
+      'js.heap.total': {
+        icon: '🧠',
+        label: 'Total JS Heap',
+        value: performance.memory ? Math.round(performance.memory.totalJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
+        unit: 'MB',
+      },
+      'page.load.time': {
+        icon: '⏱️',
+        label: 'Page Load Time',
+        value: loadTime,
+        unit: 's',
+      },
+      'round.trip.time': {
+        icon: '🔄',
+        label: 'Round Trip Time',
+        value: navigator.connection.rtt,
+        unit: 'ms',
+      },
+      'js.files.loaded': {
+        icon: '📜',
+        label: 'JS Files Loaded',
+        value: jsFiles,
+        unit: '',
+      },
+      'avg.speed': {
+        icon: '⚡',
+        label: 'Avg Speed',
+        value: Math.round(avgDownloadSpeed * 1000) / 1000,
+        unit: 'KB/s',
+      },
+    }));
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-
-      const loadTime = performance.timing ? (performance.timing.loadEventEnd - performance.timing.navigationStart) / 1000 : false;
-      const jsFiles = document.querySelectorAll('script[src]').length;
-
-      const resources = performance.getEntriesByType('resource');
-      const totalDownloadTime = resources.reduce((acc, resource) => acc + (resource.responseEnd - resource.responseStart), 0);
-      const totalSize = resources.reduce((acc, resource) => acc + resource.transferSize, 0);
-      const avgDownloadSpeed = totalSize / totalDownloadTime || 0;
-
-      setStats2(prev => ({
-        ...prev,
-        'dom.count': {
-          icon: '🧮',
-          label: 'DOM Count',
-          value: functionRelevantElements().length,
-          unit: '',
-        },
-        'js.heap.used': {
-          icon: '🧠',
-          label: 'Used JS Heap',
-          value: performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
-          unit: 'MB',
-        },
-        'js.heap.total': {
-          icon: '🧠',
-          label: 'Total JS Heap',
-          value: performance.memory ? Math.round(performance.memory.totalJSHeapSize / 1000 / 1000 * 1000) / 1000 : false,
-          unit: 'MB',
-        },
-        'page.load.time': {
-          icon: '⏱️',
-          label: 'Page Load Time',
-          value: loadTime,
-          unit: 's',
-        },
-        'round.trip.time': {
-          icon: '🔄',
-          label: 'Round Trip Time',
-          value: navigator.connection.rtt,
-          unit: 'ms',
-        },
-        'js.files.loaded': {
-          icon: '📜',
-          label: 'JS Files Loaded',
-          value: jsFiles,
-          unit: '',
-        },
-        'avg.speed': {
-          icon: '⚡',
-          label: 'Avg Speed',
-          value: Math.round(avgDownloadSpeed * 1000) / 1000,
-          unit: 'KB/s',
-        },
-      }));
+      constructDetails()
     }, intervalTimer);
 
     return () => clearInterval(interval);
-  }, [intervalTimer]);
+  }, [intervalTimer, constructDetails]);
 
   useEffect(() => {
     if (Object.keys(stats2).length) {
@@ -153,10 +156,10 @@ export default function ComponentContent() {
             data={statsHistory?.map(stat => stat[key].value).filter(Number)}
             width={100} height={20} stroke="blue" strokeWidth={2} tooltip={true} />
 
-          <Typography variant='caption' style={{ width: '50px', textAlign: 'right' }}>{entry.value}</Typography>
+          <Typography variant='caption' style={{ width: '70px', textAlign: 'right' }}>{entry.value} {entry.unit}</Typography>
 
-          <Typography variant='caption' style={{ width: '50px', textAlign: 'right' }}>
-            {Math.round(statsHistory?.map(stat => stat[key].value).reduce((acc, val) => acc + val, 0) / statsHistory.length)}
+          <Typography variant='caption' style={{ width: '70px', textAlign: 'right' }}>
+            {Math.round(statsHistory?.map(stat => stat[key].value).reduce((acc, val) => acc + val, 0) / statsHistory.length)} {entry.unit}
           </Typography>
         </Box>)}
 

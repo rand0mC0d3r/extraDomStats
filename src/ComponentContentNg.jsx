@@ -2,6 +2,7 @@ import { Box, Button, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import Draggable from 'react-draggable'; // The default
 import GithubPage from './GithubPage';
+import Metrics from './Metrics';
 import Sparkline from './Sparkline';
 import { functionRelevantElements } from './utils';
 
@@ -11,7 +12,7 @@ const intervals = [
   { label: '5s', value: 5000 },
 ]
 
-export default function ComponentContent() {
+export default function ComponentContentNg() {
   const [stats2, setStats2] = useState({});
   const [statsHistory, setStatsHistory] = useState([]);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -151,72 +152,16 @@ export default function ComponentContent() {
   if (Object.keys(stats2).length === 0) return null;
 
   return <>
-    <GithubPage />
-    {/* <Draggable
-      position={position}
-      grid={[10, 10]}
-      scale={1}
-      onStop={handleStop}
-      on
-    >
-      <Box
-        gap={2}
-        p={1}
-        sx={{
-          bgcolor: 'background.default',
-          borderRadius: 2,
-          borderColor: 'divider',
-          border: 1,
-        }}
-        display={'flex'}
-        flexDirection={'column'}
-        style={{
-          pointerEvents: 'auto',
-          width: 'fit-content',
-          cursor: 'move',
-        }}
-      >
-        {Object.entries(stats2).map(([key, entry], i) => <Box
-          key={key}
-          display={'flex'}
-          justifyContent={'space-between'}
-          gap={2}
-          alignItems={'center'}
-          px={2}
-          py={1}
-          sx={{
-            borderRadius: 2,
-          }}
-          style={{
-            border: '1px solid #00000022',
-            background: `rgba(255, 255, 255, ${i % 2 === 0 ? '0.3' : '0.5'} )`,
-          }}>
-          <Typography variant='caption'>{entry.icon}</Typography>
-          <Typography variant='caption' style={{ width: '125px' }}>{entry.label}:</Typography>
-
-          <Sparkline
-            data={statsHistory?.map(stat => stat[key].value).filter(Number)}
-            width={100} height={20} stroke="blue" strokeWidth={2} tooltip={false} />
-
-          <Typography variant='caption' style={{ width: '85px', textAlign: 'right' }}>{entry.value} {entry.unit}</Typography>
-
-          <Typography variant='caption' style={{ width: '85px', textAlign: 'right' }}>
-            {Math.round(statsHistory?.map(stat => stat[key].value).reduce((acc, val) => acc + val, 0) / statsHistory.length)} {entry.unit}
-          </Typography>
-        </Box>)}
-
-        <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-          {intervals.map(({ label, value }) => <Button
-            variant='contained'
-            color="primary"
-            size="small"
-            key={label}
-            onClick={() => setIntervalTimer(value)}
-          >
-            {label}
-          </Button>)}
-        </div>
-      </Box>
-    </Draggable> */}
+    {Object.entries(stats2).map(([key, entry], i) =>
+      <Metrics
+        key={key}
+        icon={entry.icon}
+        text={entry.label}
+        unit={entry.unit}
+        value={entry.value}
+        averageValue={Math.round(statsHistory?.map(stat => stat[key].value).reduce((acc, val) => acc + val, 0) / statsHistory.length)}
+        values={statsHistory?.map(stat => stat[key].value).filter(Number)}
+      />
+    )}
   </>
 }

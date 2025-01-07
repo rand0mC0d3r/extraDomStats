@@ -7,6 +7,8 @@ import { functionRelevantElements, getDominantFontFace, getGenericFactor } from 
 const dominantBackgroundColor = getGenericFactor('backgroundColor', functionRelevantElements(), color => color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent');
 const dominantBorderRadius = getGenericFactor('borderRadius', functionRelevantElements(), radius => radius !== '0px');
 const dominantBorderColor = getGenericFactor('borderColor', functionRelevantElements(), color => color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent');
+const dominantFontWeight = getGenericFactor('fontWeight', functionRelevantElements(), weight => weight !== '400');
+const dominantBoxShadow = getGenericFactor('boxShadow', functionRelevantElements(), color => color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent');
 const dominantFontFace = getDominantFontFace();
 const dominantGap = getGenericFactor('gap', functionRelevantElements(), gap => gap !== '0px' && gap !== 'normal');
 
@@ -25,14 +27,17 @@ const theme = createTheme({
     error: {
       main: red.A400,
     },
-    background: {
-      default: Color(dominantBackgroundColor).darken(0.25).toString() || '#ffffff',
-      paper: dominantBackgroundColor || '#ffffff',
-      // default: dominantBackgroundColor || '#ffffff',
-    },
+    // background: {
+    //   default: Color(dominantBackgroundColor).darken(0.25).lightness(35).toString() || '#ffffff',
+    //   paper: dominantBackgroundColor || '#ffffff',
+    // },
   },
   typography: {
     fontFamily: dominantFontFace || 'Arial',
+    fontWeight: dominantFontWeight || 'bold',
+    allVariants: {
+      fontWeight: dominantFontWeight || 'bold',
+    }
   },
   shape: {
     borderRadius: Math.min(parseInt(dominantBorderRadius.replace(/\D/g, ''), 10), 8),
@@ -46,6 +51,25 @@ const theme = createTheme({
           textTransform: 'none',
           borderColor: dominantBorderColor || '#000000',
         },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          boxShadow: dominantBoxShadow || 'none',
+        },
+      },
+    },
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          fontWeight: dominantFontWeight || 'bold',
+        },
+        variant: {
+          caption: {
+            fontWeight: dominantFontWeight || 'bold',
+          },
+        }
       },
     },
   },

@@ -1,9 +1,9 @@
 import { Box, Button, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import Draggable from 'react-draggable'; // The default
-import GithubPage from './GithubPage';
-import Sparkline from './Sparkline';
-import { functionRelevantElements } from './utils';
+import Sparkline from '../Sparkline';
+import { functionRelevantElements } from '../utils';
+import GithubPage from './GithubPage.jsx';
 
 const intervals = [
   { label: '1s', value: 1000 },

@@ -1,7 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import Draggable from 'react-draggable'; // The default
-import GithubPage from './GithubPage';
 import Metrics from './Metrics';
 import Sparkline from './Sparkline';
 import { functionRelevantElements } from './utils';
@@ -152,16 +151,19 @@ export default function ComponentContentNg() {
   if (Object.keys(stats2).length === 0) return null;
 
   return <>
-    {Object.entries(stats2).map(([key, entry], i) =>
-      <Metrics
-        key={key}
-        icon={entry.icon}
-        text={entry.label}
-        unit={entry.unit}
-        value={entry.value}
-        averageValue={Math.round(statsHistory?.map(stat => stat[key].value).reduce((acc, val) => acc + val, 0) / statsHistory.length)}
-        values={statsHistory?.map(stat => stat[key].value).filter(Number)}
-      />
-    )}
+    {Object.entries(stats2)
+      // .filter(([key, entry], index) => index < 1)
+      .map(([key, entry]) =>
+        <Metrics
+          key={key}
+          uniqueKey={key}
+          icon={entry.icon}
+          text={entry.label}
+          unit={entry.unit}
+          value={entry.value}
+          averageValue={Math.round(statsHistory?.map(stat => stat[key].value).reduce((acc, val) => acc + val, 0) / statsHistory.length)}
+          values={statsHistory?.map(stat => stat[key].value).filter(Number)}
+        />
+      )}
   </>
 }

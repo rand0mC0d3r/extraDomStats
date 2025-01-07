@@ -2,7 +2,6 @@
 import { ThemeProvider } from '@mui/material/styles';
 import { IndustrialProvider, PlacementPosition } from 'mui-industrial';
 import ReactDOM from "react-dom/client";
-import ComponentContent from './ComponentContent';
 import ComponentContentNg from './ComponentContentNg';
 import './googleMaps.css';
 import theme from './theme';
@@ -51,11 +50,10 @@ ReactDOM.createRoot(root).render(<ThemeProvider theme={theme}>
     size="medium"
     hasBorder={true}
     fullWidth={true}
-    style={{ height: '40px', pointerEvents: 'auto' }}
+    style={{ height: '36px', pointerEvents: 'auto' }}
     slim={true}
     variant='outlined'
   >
-    {/* <ComponentContent /> */}
     <ComponentContentNg />
   </IndustrialProvider>
 </ThemeProvider>);

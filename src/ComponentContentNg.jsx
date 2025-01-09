@@ -30,9 +30,9 @@ export default function ComponentContentNg() {
       ...prev,
       'dom.count': {
         icon: '🧮',
-        label: 'DOM Count',
+        label: 'Count',
         value: functionRelevantElements().length,
-        unit: '',
+        unit: 'DOM',
       },
       'js.heap.used': {
         icon: '🧠',

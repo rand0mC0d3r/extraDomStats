@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Sparkline = ({ data, width = 100, height = 20, stroke = 'black', strokeWidth = 1, tooltip = false }) => {
+const Sparkline = ({ data, width = 100, height = 20, stroke = 'black', strokeWidth = 1, tooltip = false, average = true }) => {
   if (!data || data.length === 0) return null;
 
   // Calculate the min and max values to normalize the data
@@ -14,8 +14,15 @@ const Sparkline = ({ data, width = 100, height = 20, stroke = 'black', strokeWid
     return [x, y];
   });
 
+  const averagedPoints = data.map((d, i, orig) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - (orig.reduce((acc, val) => acc + val, 0) / orig.length - min) / (max - min) * height;
+    return [x, y];
+  });
+
   // Generate the polyline points attribute
   const polylinePoints = points.map(point => point.join(',')).join(' ');
+  const averagedPolylinePoints = averagedPoints.map(point => point.join(',')).join(' ');
 
   return (
     <svg width={width} height={height} style={{ overflow: 'visible' }}>
@@ -25,6 +32,12 @@ const Sparkline = ({ data, width = 100, height = 20, stroke = 'black', strokeWid
         strokeWidth={strokeWidth}
         points={polylinePoints}
       />
+      {average && <polyline
+        fill="none"
+        stroke={'red'}
+        strokeWidth={0.5}
+        points={averagedPolylinePoints}
+      />}
       {tooltip && points.map(([x, y], index) => (
         <circle
           key={index}

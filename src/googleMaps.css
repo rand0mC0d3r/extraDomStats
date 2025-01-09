@@ -1,12 +1,29 @@
+
+
 /* html {
   height: unset !important;
-}
+} */
 
-body, #app {
+/* body, #app {
   margin-bottom: 40px !important;
+  margin-top: 40px !important;
   padding-bottom: 40px !important;
+  padding-top: 40px !important;
+  height: 90%;
+} */
+body {
+  display: flex;
+  height: unset !important;
+  min-height: unset !important;
+  /* padding: 10px; */
+  /* margin: 10px; */
+  border: 5px solid green;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  position: absolute !important;
+  inset: 0;
 }
 
-#app {
+/* #app {
   bottom: 40px !important;
 } */

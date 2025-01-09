@@ -32,13 +32,13 @@ const theme = createTheme({
     //   paper: dominantBackgroundColor || '#ffffff',
     // },
   },
-  typography: {
-    fontFamily: dominantFontFace || 'Arial',
-    fontWeight: dominantFontWeight || 'bold',
-    allVariants: {
-      fontWeight: dominantFontWeight || 'bold',
-    }
-  },
+  // typography: {
+  //   fontFamily: dominantFontFace || 'Arial',
+  //   fontWeight: dominantFontWeight || 'bold',
+  //   allVariants: {
+  //     fontWeight: dominantFontWeight || 'bold',
+  //   }
+  // },
   shape: {
     borderRadius: Math.min(parseInt(dominantBorderRadius.replace(/\D/g, ''), 10), 8),
   },
@@ -63,11 +63,11 @@ const theme = createTheme({
     MuiTypography: {
       styleOverrides: {
         root: {
-          fontWeight: dominantFontWeight || 'bold',
+          // fontWeight: dominantFontWeight || 'bold',
         },
         variant: {
           caption: {
-            fontWeight: dominantFontWeight || 'bold',
+            // fontWeight: dominantFontWeight || 'bold',
           },
         }
       },

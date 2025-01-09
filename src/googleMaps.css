@@ -31,3 +31,11 @@ body {
 /* #app {
   bottom: 40px !important;
 } */
+
+#statusHelper > div {
+  margin-right: 4px;
+  font-size: 16px;
+}
+#statusHelper > span {
+  margin-right: 4px;
+}

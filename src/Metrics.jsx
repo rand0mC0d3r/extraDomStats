@@ -39,14 +39,14 @@ export default function Metrics({ uniqueKey, text, icon, values, value, averageV
         width={100} height={16} stroke="blue" strokeWidth={2} tooltip={false} />
     </Status.Template> */}
     <Status.Template {...{ icon, text }} />
-    <Status.Template >
+    < Status.Template >
       <Sparkline
         data={values}
         width={100} height={16} stroke="blue" strokeWidth={2} tooltip={false} />
-    </Status.Template>
+    </Status.Template >
     <Status.Template badge={`${value} ${unit} (${averageValue} avg)`} />
 
-  </Status>
+  </Status >
 }
 
 Metrics.propTypes = {

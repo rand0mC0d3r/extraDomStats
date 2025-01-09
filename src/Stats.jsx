@@ -14,7 +14,7 @@ const heightOfBar = '36px';
 const wrapper = document.createElement("div");
 // wrapper.style.position = "relative";
 wrapper.style.position = "relative";
-// wrapper.style.backgroundColor = 'blue';
+// wrapper.style.backgroundColor = 'black';
 wrapper.style.border = '5px solid yellow';
 wrapper.style.flex = '1 1 auto';
 
@@ -43,7 +43,7 @@ const root = document.createElement("div");
 // root.style.right = "0";
 // root.style.bottom = "0";
 // root.style.zIndex = "2147483647";
-root.style.backgroundColor = 'red';
+// root.style.backgroundColor = 'gray';
 root.style.flex = '1 1 auto';
 root.style.height = heightOfBar;
 root.style.minHeight = heightOfBar;

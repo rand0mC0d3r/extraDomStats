@@ -20,8 +20,9 @@ wrapper.style.flex = '1 1 auto';
 
 wrapper.style.padding = '10px';
 wrapper.style.margin = '10px';
-wrapper.style.height = '90%';
-wrapper.style.maxHeight = '90%';
+// wrapper.style.height = '90%';
+// wrapper.style.maxHeight = '90%';
+wrapper.style.alignSelf = 'stretch';
 // wrapper.style.width = "100%";
 // wrapper.style.height = "100%";
 wrapper.style.overflow = "scroll";

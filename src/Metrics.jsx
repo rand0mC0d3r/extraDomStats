@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Chip, Typography } from '@mui/material'
 import { PopperHeight, PopperWidth, Status, StatusType } from 'mui-industrial'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
@@ -19,27 +19,30 @@ export default function Metrics({ uniqueKey, text, icon, values, value, averageV
       },
       open,
       title: text,
-      content: <Box p={4} flexDirection={'column'} display={'flex'}>
+      content: <Box p={4} flexDirection={'column'} display={'flex'} gap={4}>
 
-        <Typography variant='h5' color="textPrimary">{icon} {text}</Typography>
-        <Typography variant='subtitle1' color="textPrimary">{value} {unit}</Typography>
-        <Typography variant='subtitle2' color="textSecondary">
-          {averageValue} {unit}
-        </Typography>
+        <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
+          <Typography variant='h5' color="textPrimary">{icon} {text}</Typography>
+
+          <Box display={'flex'} flexDirection={'row'} gap={2}>
+            <Chip label={`${value} ${unit}`} />
+            <Chip label={`${averageValue} ${unit} avg`} />
+          </Box>
+          {/* <Typography variant='subtitle1' color="textPrimary">{value} {unit}</Typography> */}
+          {/* <Typography variant='subtitle2' color="textSecondary">
+
+            {averageValue} {unit}
+          </Typography> */}
+        </Box>
         <Sparkline
           data={values}
-          width={100} height={16} stroke="blue" strokeWidth={2} tooltip={false} />
+          width={375} height={48} stroke="blue" strokeWidth={2} tooltip={true} />
       </Box>,
     }}
     id={uniqueKey}
-    tooltip={text}>
-    {/* <Status.Template {...{ icon, text }} badge={`${value} ${unit} (${averageValue} avg)`}>
-      <Sparkline
-        data={values}
-        width={100} height={16} stroke="blue" strokeWidth={2} tooltip={false} />
-    </Status.Template> */}
+    tooltip={text} >
     <Status.Template {...{ icon, text }} />
-    < Status.Template >
+    <Status.Template >
       <Sparkline
         data={values}
         width={100} height={16} stroke="blue" strokeWidth={2} tooltip={false} />

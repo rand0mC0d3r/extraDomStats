@@ -7,24 +7,16 @@ import './googleMaps.css';
 import theme from './theme';
 import { extensionIdentifier } from './utils';
 
-
 const heightOfBar = '36px';
 
 // Create a wrapper div
 const wrapper = document.createElement("div");
-// wrapper.style.position = "relative";
 wrapper.style.position = "relative";
-// wrapper.style.backgroundColor = 'black';
-wrapper.style.border = '5px solid yellow';
+// wrapper.style.border = '5px solid yellow';
 wrapper.style.flex = '1 1 auto';
-
-wrapper.style.padding = '10px';
-wrapper.style.margin = '10px';
-// wrapper.style.height = '90%';
-// wrapper.style.maxHeight = '90%';
+// wrapper.style.padding = '10px';
+// wrapper.style.margin = '10px';
 wrapper.style.alignSelf = 'stretch';
-// wrapper.style.width = "100%";
-// wrapper.style.height = "100%";
 wrapper.style.overflow = "scroll";
 wrapper.id = `${extensionIdentifier}-wrapper`;
 
@@ -38,23 +30,14 @@ document.body.appendChild(wrapper);
 
 // Create the root div
 const root = document.createElement("div");
-// root.style.top = "0";
-// root.style.left = "0";
-// root.style.right = "0";
-// root.style.bottom = "0";
-// root.style.zIndex = "2147483647";
-// root.style.backgroundColor = 'gray';
 root.style.flex = '1 1 auto';
 root.style.height = heightOfBar;
 root.style.minHeight = heightOfBar;
 root.style.maxHeight = heightOfBar;
-// root.style.pointerEvents = "none";
-// root.style.position = "fixed";
 root.id = extensionIdentifier;
 
 // Append the root to the wrapper
 document.body.appendChild(root);
-
 
 const stylesheet = document.createElement("link");
 stylesheet.rel = "stylesheet";

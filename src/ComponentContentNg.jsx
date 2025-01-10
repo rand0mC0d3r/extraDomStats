@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import Draggable from 'react-draggable'; // The default
+import FindElement from './FindElement';
 import Metrics from './Metrics';
 import Sparkline from './Sparkline';
 import { functionRelevantElements } from './utils';
@@ -151,6 +152,7 @@ export default function ComponentContentNg() {
   if (Object.keys(stats2).length === 0) return null;
 
   return <>
+    <FindElement />
     {Object.entries(stats2)
       // .filter(([key, entry], index) => index < 1)
       .map(([key, entry]) =>
